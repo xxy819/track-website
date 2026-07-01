@@ -428,37 +428,67 @@
     };
 
     function doQuery() {
-        var code = document.getElementById('cno').value.trim();
-        if (!code) { alert('请输入追踪号码'); return; }
-        var d = orderData[code];
-        if (!d) {
-            document.getElementById('titlePrefix').innerHTML = '【' + code + '】运单信息';
+        var input = document.getElementById('cno').value.trim();
+        if (!input) { alert('请输入追踪号码'); return; }
+        var codes = input.split(/[\n,，\s;；]+/).filter(function(c){ return c.trim() !== ''; });
+        if (codes.length === 0) { alert('请输入追踪号码'); return; }
+        
+        var found = [];
+        var notFound = [];
+        for (var i = 0; i < codes.length; i++) {
+            var code = codes[i].trim();
+            var d = orderData[code];
+            if (d) {
+                found.push({ code: code, data: d });
+            } else {
+                notFound.push(code);
+            }
+        }
+        
+        if (found.length === 0) {
+            document.getElementById('titlePrefix').innerHTML = '【批量查询】运单信息';
             document.getElementById('titleTicket').innerHTML = '第0票';
-            document.getElementById('resultBody').innerHTML = '<div class="no-data">未找到该运单信息</div>';
+            var msg = '<div class="no-data">';
+            for (var i = 0; i < notFound.length; i++) {
+                msg += notFound[i] + ' - 未找到该运单信息<br>';
+            }
+            msg += '</div>';
+            document.getElementById('resultBody').innerHTML = msg;
             return;
         }
-        currentCode = code;
-        document.getElementById('titlePrefix').innerHTML = '【' + code + '】运单信息 件数:【' + d.pieces + '】';
-        document.getElementById('titleTicket').innerHTML = '第1票';
-        var html = '<div class="data-row">';
-        html += '<ul>';
-        html += '<li class="data-col1">' + (d.refNo || '&nbsp;') + '</li>';
-        html += '<li class="data-col2">' + d.trackNo + '</li>';
-        html += '<li class="data-col3">' + d.destination + '</li>';
-        html += '<li class="data-col4">' + d.localTime + '</li>';
-        html += '<li class="data-col5">' + d.status + '</li>';
-        html += '<li class="data-col6">' + (d.receiver || '&nbsp;') + '</li>';
-        html += '</ul>';
-        html += '<div class="data-row" style="width:100%">';
-        html += '    <ul>';
-        html += '        <li class="op-col">';
-        html += '            <button class="btnch" onclick="selectFile()">附件</button>';
-        html += '            <button class="btnch" onclick="downloadTrackFile()">下载</button>';
-        html += '            <button class="btnch" onclick="viewTrackDetail()">物流轨迹</button>';
-        html += '        </li>';
-        html += '    </ul>';
-        html += '</div>';
-        html += '</div>';
+        
+        currentCode = found[0].code;
+        document.getElementById('titlePrefix').innerHTML = '【批量查询】运单信息 共查询' + codes.length + '票';
+        document.getElementById('titleTicket').innerHTML = '查到' + found.length + '票，未查到' + notFound.length + '票';
+        
+        var html = '';
+        for (var n = 0; n < found.length; n++) {
+            var d = found[n].data;
+            var code = found[n].code;
+            html += '<div class="data-row" style="margin-top:3px;border:1px solid #dcddd7;">';
+            html += '<div style="padding:3px 5px;background:#f0f5ff;font-weight:600;color:#1d2088;">' + code + '</div>';
+            html += '<ul>';
+            html += '<li class="data-col1">' + (d.refNo || '&nbsp;') + '</li>';
+            html += '<li class="data-col2">' + d.trackNo + '</li>';
+            html += '<li class="data-col3">' + d.destination + '</li>';
+            html += '<li class="data-col4">' + d.localTime + '</li>';
+            html += '<li class="data-col5">' + d.status + '</li>';
+            html += '<li class="data-col6">' + (d.receiver || '&nbsp;') + '</li>';
+            html += '</ul>';
+            html += '<div class="data-row" style="width:100%">';
+            html += '    <ul>';
+            html += '        <li class="op-col">';
+            html += '            <button class="btnch" onclick="selectFile()">附件</button>';
+            html += '            <button class="btnch" onclick="downloadTrackFile()">下载</button>';
+            html += '            <button class="btnch" onclick="viewTrackDetail()">物流轨迹</button>';
+            html += '        </li>';
+            html += '    </ul>';
+            html += '</div>';
+            html += '</div>';
+        }
+        if (notFound.length > 0) {
+            html += '<div class="no-data" style="margin-top:5px;">未查到：' + notFound.join('、') + '</div>';
+        }
         document.getElementById('resultBody').innerHTML = html;
     }
 
