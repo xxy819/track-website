@@ -126,16 +126,15 @@ function switchLang(lang){
 currentLang=lang;
 document.getElementById('pageTitle').textContent=t('title');
 document.getElementById('cno').placeholder=t('placeholder');
-document.getElementById('btnQuery').value=t('query');
+var btn=document.getElementById('btnQuery');btn.textContent=t('query');
 document.getElementById('lblShipInfo').textContent=t('shipInfo');
 document.getElementById('lblTicket').textContent=t('ticket');
 document.getElementById('lblTicket2').textContent=t('ticket2');
 document.getElementById('lblPrompt').textContent=t('noData');
 var items=document.querySelectorAll('#langBar a');
-for(var i=0;i<items.length;i++){items[i].classList.remove('active');}
-document.querySelector('#langBar a[onclick*="'+lang+'"]').classList.add('active');
-if(document.getElementById('resultBody').querySelector('.data-row')){
-doQuery();}
+for(var i=0;i<items.length;i++){items[i].className='';}
+var langMap={zh:0,es:1,pt:2};
+if(langMap[lang]!==undefined){items[langMap[lang]].className='active';}
 }
 </script>
 <script type="text/javascript">
