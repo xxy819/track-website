@@ -16,7 +16,7 @@ body{background:url(images/bg.png);background-attachment:fixed}
 .content{width:1100px;margin-left:auto;margin-right:auto}
 .menu_search{width:460px;height:100px;margin-top:20px;margin-bottom:40px}
 .search{width:250px;float:left;height:100px;border-radius:5px;border:2px solid #1291c5;resize:none;padding:5px;box-sizing:border-box;font-size:14px}
-.input_search{float:left;width:60px;border-radius:5px;font-size:20px;height:50px;border:0;margin-top:20px;color:#fff;background:#1291c5;margin-left:20px;cursor:pointer}
+.input_search{float:left;width:90px;border-radius:5px;font-size:15px;height:50px;border:0;margin-top:20px;color:#fff;background:#1291c5;margin-left:20px;cursor:pointer}
 .input_search:hover{border-radius:5px;background-color:#07bde4}
 .div_canta{float:left;width:100%;margin-bottom:20px}
 .div_tb_h{float:left;border:1px solid #dcddd7;width:100%;padding-top:10px;height:30px}
@@ -135,6 +135,8 @@ var items=document.querySelectorAll('#langBar a');
 for(var i=0;i<items.length;i++){items[i].className='';}
 var langMap={zh:0,es:1,pt:2};
 if(langMap[lang]!==undefined){items[langMap[lang]].className='active';}
+var input=document.getElementById('cno').value.trim();
+if(input){doQuery();}
 }
 </script>
 <script type="text/javascript">
